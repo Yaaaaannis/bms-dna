@@ -12,7 +12,7 @@ export default function Home() {
   };
 
   return (
-    <div className="relative">
+    <div className={`relative ${isLoading ? 'overflow-hidden h-screen' : ''}`}>
       {/* HomePage toujours présente en arrière-plan */}
       <HomePage />
       
