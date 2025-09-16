@@ -15,40 +15,49 @@ export default function Loader({ onComplete }: LoaderProps) {
 
   useEffect(() => {
     // Variables pour stocker les timelines
-    let tl1: gsap.core.Timeline;
-    let tl2: gsap.core.Timeline;
-    let tl3: gsap.core.Timeline;
-    let tl4: gsap.core.Timeline;
-
-    // Fonction pour créer une animation qui accélère
-    const createAcceleratingAnimation = (ref: React.RefObject<HTMLDivElement>, direction: 'right' | 'left') => {
-      const tl = gsap.timeline({ repeat: -1 });
-      
-      if (direction === 'right') {
-        tl.to(ref.current, {
-          backgroundPosition: '100% 0',
-          duration: 3,
-          ease: 'none'
-        });
-      } else {
-        tl.fromTo(ref.current, 
-          { backgroundPosition: '100% 0' },
-          {
-            backgroundPosition: '0% 0',
-            duration: 3,
-            ease: 'none'
-          }
-        );
-      }
-      
-      return tl;
-    };
+    const tl1: gsap.core.Timeline = gsap.timeline({ repeat: -1 });
+    const tl2: gsap.core.Timeline = gsap.timeline({ repeat: -1 });
+    const tl3: gsap.core.Timeline = gsap.timeline({ repeat: -1 });
+    const tl4: gsap.core.Timeline = gsap.timeline({ repeat: -1 });
 
     // Créer les animations initiales
-    tl1 = createAcceleratingAnimation(line1Ref, 'right');
-    tl2 = createAcceleratingAnimation(line2Ref, 'left');
-    tl3 = createAcceleratingAnimation(line3Ref, 'right');
-    tl4 = createAcceleratingAnimation(line4Ref, 'left');
+    if (line1Ref.current) {
+      tl1.to(line1Ref.current, {
+        backgroundPosition: '100% 0',
+        duration: 3,
+        ease: 'none'
+      });
+    }
+
+    if (line2Ref.current) {
+      tl2.fromTo(line2Ref.current, 
+        { backgroundPosition: '100% 0' },
+        {
+          backgroundPosition: '0% 0',
+          duration: 3,
+          ease: 'none'
+        }
+      );
+    }
+
+    if (line3Ref.current) {
+      tl3.to(line3Ref.current, {
+        backgroundPosition: '100% 0',
+        duration: 3,
+        ease: 'none'
+      });
+    }
+
+    if (line4Ref.current) {
+      tl4.fromTo(line4Ref.current, 
+        { backgroundPosition: '100% 0' },
+        {
+          backgroundPosition: '0% 0',
+          duration: 3,
+          ease: 'none'
+        }
+      );
+    }
 
     // Commencer à vitesse 0.5
     gsap.set([tl1, tl2, tl3, tl4], { timeScale: 0.5 });

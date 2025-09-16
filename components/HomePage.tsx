@@ -3,6 +3,7 @@
 import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import Image from 'next/image';
 import Header from './Header';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -58,9 +59,11 @@ export default function HomePage() {
         
         {/* Logo SVG au centre */}
         <div className="relative z-10 flex flex-col items-center">
-          <img 
+          <Image 
             src="/logo.svg" 
             alt="BMS DNA Logo" 
+            width={384}
+            height={192}
             className="w-96 h-auto mb-8"
           />
         </div>
