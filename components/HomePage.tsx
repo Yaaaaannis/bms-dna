@@ -73,8 +73,10 @@ export default function HomePage() {
         </div>
       </div>
       
-      {/* Section Hero */}
-      <HeroSection />
+      {/* Section Hero - maintenant dans le contexte de scroll */}
+      <div className="relative">
+        <HeroSection />
+      </div>
     </>
   );
 }
