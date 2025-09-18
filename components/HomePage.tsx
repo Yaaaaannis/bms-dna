@@ -6,6 +6,8 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Image from 'next/image';
 import Header from './Header';
 import HeroSection from './HeroSection';
+import VideoProjectionSection from './VideoProjectionSection';
+
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -77,6 +79,10 @@ export default function HomePage() {
       <div className="relative">
         <HeroSection />
       </div>
+      
+      {/* Section Video Projection Mapping */}
+      <VideoProjectionSection />
+     
     </>
   );
 }
