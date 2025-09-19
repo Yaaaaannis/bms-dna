@@ -6,13 +6,30 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Image from 'next/image';
 import Header from './Header';
 import HeroSection from './HeroSection';
-import VideoProjectionSection from './VideoProjectionSection';
+import DnaScene3D from './DnaScene3D';
+import { useState } from 'react';
+
 
 
 gsap.registerPlugin(ScrollTrigger);
 
+interface ProjectData {
+  id: number;
+  title: string;
+  description: string;
+  features: string[];
+}
+
+const defaultProject: ProjectData = {
+  id: 1,
+  title: "INTERACTIVE 3D",
+  description: "Explorez notre modèle DNA en 3D avec un rendu ASCII art et des effets Glitch cyberpunk.",
+  features: ["Rendu ASCII art", "Effet Glitch cyberpunk", "Animation native du modèle", "Éclairage dynamique"]
+};
+
 export default function HomePage() {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [activeProject, setActiveProject] = useState<ProjectData>(defaultProject);
 
   useEffect(() => {
     // Animation du header gauche (descend pendant le scroll)
@@ -80,8 +97,34 @@ export default function HomePage() {
         <HeroSection />
       </div>
       
+      {/* Section DNA 3D Scene */}
+      <div className="relative h-[600vh] w-full flex">
+        <div className="w-1/3 h-screen bg-gradient-to-br from-white to-gray-100 flex items-center justify-center sticky top-0">
+          <div className="text-center p-8">
+            <h3 
+              className="text-black text-3xl font-bold mb-4"
+              style={{
+                fontFamily: 'DrukWideBold, sans-serif',
+                letterSpacing: '2px'
+              }}
+            >
+              {activeProject.title}
+            </h3>
+            <p className="text-black/70 text-lg mb-6">
+              {activeProject.description}
+            </p>
+            <div className="space-y-3 text-sm text-black/60">
+              {activeProject.features.map((feature, index) => (
+                <p key={index}>• {feature}</p>
+              ))}
+            </div>
+          </div>
+        </div>
+        <DnaScene3D onProjectChange={setActiveProject} />
+      </div>
+      
       {/* Section Video Projection Mapping */}
-      <VideoProjectionSection />
+
      
     </>
   );
