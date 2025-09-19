@@ -25,7 +25,7 @@ const projects: ProjectData[] = [
     title: "PROJET DNA",
     description: "Modélisation 3D avancée d'une structure ADN avec animations et effets visuels interactifs.",
     features: ["Modélisation 3D", "Animations fluides", "Effets ASCII art", "Rendu temps réel"],
-    position: [2, 0, 0],
+    position: [2, 8, 0],
     label: "DNA"
   },
   {
@@ -33,7 +33,7 @@ const projects: ProjectData[] = [
     title: "INTERFACE CYBER",
     description: "Interface utilisateur futuriste avec effets de glitch et rendu stylisé pour une expérience immersive.",
     features: ["Design cyberpunk", "Effets Glitch", "Interface responsive", "Animations GSAP"],
-    position: [-2, 1, 0],
+    position: [-2, 7, 0],
     label: "UI"
   },
   {
@@ -41,7 +41,7 @@ const projects: ProjectData[] = [
     title: "TECHNOLOGIE 3D",
     description: "Intégration de technologies 3D modernes avec React Three Fiber et post-processing avancé.",
     features: ["React Three Fiber", "Post-processing", "Shaders personnalisés", "Performance optimisée"],
-    position: [0, -2, 1],
+    position: [0, 10, 1],
     label: "3D"
   }
 ];
@@ -52,7 +52,7 @@ interface DnaScene3DProps {
 
 export default function DnaScene3D({ onProjectChange }: DnaScene3DProps) {
   const [activeProject, setActiveProject] = useState<ProjectData>(projects[0]);
-  const [cameraPosition, setCameraPosition] = useState<[number, number, number]>([0, -10, 20]);
+  const [cameraPosition, setCameraPosition] = useState<[number, number, number]>([30, -10, 30]);
   const sceneRef = useRef<HTMLDivElement>(null);
 
   const handlePointClick = (project: ProjectData) => {
@@ -74,8 +74,21 @@ export default function DnaScene3D({ onProjectChange }: DnaScene3DProps) {
           scrub: 1,
           onUpdate: (self) => {
             const progress = self.progress;
-            const newY = -10 + (progress * 13); // De -10 à 3
-            setCameraPosition([30, newY, 30]);
+            // Déplacement diagonal suivant l'angle du modèle (Math.PI / -9)
+            const angle = Math.PI / -12; // Même angle que le modèle
+            const diagonalDistance = progress * 40; // Distance totale de déplacement diagonal
+            
+            // Position de départ (bas et à droite)
+            const startX = 30;
+            const startY = -10;
+            const startZ = 30;
+            
+            // Position finale (haut et à gauche) - mouvement diagonal
+            const newX = startX + (diagonalDistance * Math.sin(angle));
+            const newY = startY + (diagonalDistance * Math.cos(angle));
+            const newZ = startZ + (diagonalDistance * Math.sin(angle) * 0.9); // Légère variation en Z
+            
+            setCameraPosition([newX, newY, newZ]);
           }
         }
       });
