@@ -9,8 +9,6 @@ import HeroSection from './HeroSection';
 import DnaScene3D from './DnaScene3D';
 import { useState } from 'react';
 
-
-
 gsap.registerPlugin(ScrollTrigger);
 
 interface ProjectData {
@@ -31,31 +29,31 @@ export default function HomePage() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [activeProject, setActiveProject] = useState<ProjectData>(defaultProject);
 
-  useEffect(() => {
-    // Animation du header gauche (descend pendant le scroll)
-    gsap.to('.header-left', {
-      y: '100vh',
-      ease: 'none',
-      scrollTrigger: {
-        trigger: containerRef.current,
-        start: 'top top',
-        end: 'bottom bottom',
-        scrub: 1
-      }
-    });
+  // useEffect(() => {
+  //   // Animation du header gauche (descend pendant le scroll)
+  //   gsap.to('.header-left', {
+  //     y: '100vh',
+  //     ease: 'none',
+  //     scrollTrigger: {
+  //       trigger: containerRef.current,
+  //       start: 'top top',
+  //       end: 'bottom bottom',
+  //       scrub: 1
+  //     }
+  //   });
 
-    // Animation du header droite (monte pendant le scroll)
-    gsap.to('.header-right', {
-      y: '-100vh',
-      ease: 'none',
-      scrollTrigger: {
-        trigger: containerRef.current,
-        start: 'top top',
-        end: 'bottom bottom',
-        scrub: 1
-      }
-    });
-  }, []);
+  //   // Animation du header droite (monte pendant le scroll)
+  //   gsap.to('.header-right', {
+  //     y: '-100vh',
+  //     ease: 'none',
+  //     scrollTrigger: {
+  //       trigger: containerRef.current,
+  //       start: 'top top',
+  //       end: 'bottom bottom',
+  //       scrub: 1
+  //     }
+  //   });
+  // }, []);
 
   return (
     <>
@@ -98,8 +96,8 @@ export default function HomePage() {
       </div>
       
       {/* Section DNA 3D Scene */}
-      <div className="relative h-[600vh] w-full flex">
-        <div className="w-1/3 h-screen bg-gradient-to-br from-white to-gray-100 flex items-center justify-center sticky top-0">
+      <div className="relative h-screen w-full flex">
+        <div className="w-1/3 h-screen bg-gradient-to-br from-white to-gray-100 flex items-center justify-center">
           <div className="text-center p-8">
             <h3 
               className="text-black text-3xl font-bold mb-4"

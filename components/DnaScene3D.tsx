@@ -1,14 +1,10 @@
 'use client';
 
-import React, { Suspense, useState, useRef, useEffect } from 'react';
+import React, { Suspense, useState } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { Environment, AsciiRenderer } from '@react-three/drei';
 import { DnaModel } from './Dna';
 import { InteractivePoint } from './InteractivePoint';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-
-gsap.registerPlugin(ScrollTrigger);
 
 interface ProjectData {
   id: number;
@@ -52,62 +48,17 @@ interface DnaScene3DProps {
 
 export default function DnaScene3D({ onProjectChange }: DnaScene3DProps) {
   const [activeProject, setActiveProject] = useState<ProjectData>(projects[0]);
-  const [cameraPosition, setCameraPosition] = useState<[number, number, number]>([30, -10, 30]);
-  const sceneRef = useRef<HTMLDivElement>(null);
 
   const handlePointClick = (project: ProjectData) => {
     setActiveProject(project);
     onProjectChange(project);
   };
 
-  useEffect(() => {
-    if (sceneRef.current) {
-      // Animation de la caméra au scroll
-      gsap.to(cameraPosition, {
-        y: 3, // Position finale de la caméra (plus haute)
-        duration: 1,
-        ease: "none",
-        scrollTrigger: {
-          trigger: sceneRef.current,
-          start: "top bottom",
-          end: "bottom top",
-          scrub: 1,
-          onUpdate: (self) => {
-            const progress = self.progress;
-            // Déplacement diagonal suivant l'angle du modèle (Math.PI / -9)
-            const angle = Math.PI / -12; // Même angle que le modèle
-            const diagonalDistance = progress * 40; // Distance totale de déplacement diagonal
-            
-            // Position de départ (bas et à droite)
-            const startX = 30;
-            const startY = -10;
-            const startZ = 30;
-            
-            // Position finale (haut et à gauche) - mouvement diagonal
-            const newX = startX + (diagonalDistance * Math.sin(angle));
-            const newY = startY + (diagonalDistance * Math.cos(angle));
-            const newZ = startZ + (diagonalDistance * Math.sin(angle) * 0.9); // Légère variation en Z
-            
-            setCameraPosition([newX, newY, newZ]);
-          }
-        }
-      });
-    }
-
-    return () => {
-      ScrollTrigger.getAll().forEach(trigger => {
-        if (trigger.trigger === sceneRef.current) {
-          trigger.kill();
-        }
-      });
-    };
-  }, []);
-
   return (
-    <div ref={sceneRef} className="w-2/3 h-full relative sticky top-0">
+    <div className="w-2/3 h-full relative">
       <Canvas
         shadows
-        camera={{ position: cameraPosition, fov: 70 }}
+        camera={{ position: [3, 5, 2], fov: 70, rotation: [0, 0, 0] }}
         className="w-full h-full"
         style={{ background: '#000000' }}
       >
@@ -131,9 +82,9 @@ export default function DnaScene3D({ onProjectChange }: DnaScene3DProps) {
           
           {/* Modèle DNA avec animation */}
           <DnaModel 
-            position={[-10, -10, 0]}
+            position={[-3, -2, 0]}
             scale={[1, 1, 1]}
-            rotation={[0, 0, Math.PI / -9]}
+            rotation={[Math.PI / -10, Math.PI / 6, Math.PI / -4]}
           />
           
           {/* Points interactifs */}
@@ -153,7 +104,7 @@ export default function DnaScene3D({ onProjectChange }: DnaScene3DProps) {
         
         {/* AsciiRenderer pour l'effet ASCII art */}
         <AsciiRenderer
-          fgColor="white"
+          fgColor="red"
           bgColor="black"
           characters=" .:-=+*#%@"
           invert
