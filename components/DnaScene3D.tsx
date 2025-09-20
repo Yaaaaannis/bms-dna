@@ -1,10 +1,11 @@
 'use client';
 
-import React, { Suspense, useState } from 'react';
-import { Canvas } from '@react-three/fiber';
+import React, { Suspense, useState, useRef, useEffect, useMemo } from 'react';
+import { Canvas, useThree } from '@react-three/fiber';
 import { Environment, AsciiRenderer } from '@react-three/drei';
 import { DnaModel } from './Dna';
 import { InteractivePoint } from './InteractivePoint';
+import { gsap } from 'gsap';
 
 interface ProjectData {
   id: number;
@@ -44,9 +45,65 @@ const projects: ProjectData[] = [
 
 interface DnaScene3DProps {
   onProjectChange: (project: ProjectData) => void;
+  isCameraAnimating: boolean;
 }
 
-export default function DnaScene3D({ onProjectChange }: DnaScene3DProps) {
+// Composant pour l'animation de caméra
+function CameraController({ isAnimating }: { isAnimating: boolean }) {
+  const { camera } = useThree();
+  const animationRef = useRef<gsap.core.Timeline | null>(null);
+  
+  // Position initiale de la caméra (exactement celle configurée) - mémorisée
+  const initialPosition = useMemo(() => ({ x: 3, y: 5, z: 2 }), []);
+  const modelPosition = useMemo(() => ({ x: -3, y: -2, z: 0 }), []);
+
+  useEffect(() => {
+    // Calculer la direction diagonale à l'intérieur de useEffect
+    const direction = {
+      x: modelPosition.x - initialPosition.x,
+      y: modelPosition.y - initialPosition.y,
+      z: modelPosition.z - initialPosition.z
+    };
+    
+    // Normaliser le vecteur direction
+    const length = Math.sqrt(direction.x * direction.x + direction.y * direction.y + direction.z * direction.z);
+    const normalizedDirection = {
+      x: direction.x / length,
+      y: direction.y / length,
+      z: direction.z / length
+    };
+
+    if (isAnimating) {
+      // Créer une animation continue et progressive
+      animationRef.current = gsap.timeline({ repeat: -1 });
+      
+      // Animation continue de la position de la caméra
+      animationRef.current.to(camera.position, {
+        x: initialPosition.x + normalizedDirection.x * -12,
+        y: initialPosition.y + normalizedDirection.y * -12,
+        z: initialPosition.z + normalizedDirection.z * 30,
+        duration: 8,
+        ease: "none" // Easing linéaire pour un mouvement constant
+      });
+    } else {
+      // Arrêter l'animation et revenir à la position initiale
+      if (animationRef.current) {
+        animationRef.current.kill();
+      }
+      gsap.to(camera.position, {
+        x: initialPosition.x,
+        y: initialPosition.y,
+        z: initialPosition.z,
+        duration: 1,
+        ease: "power2.out"
+      });
+    }
+  }, [isAnimating, camera, initialPosition, modelPosition]);
+
+  return null;
+}
+
+export default function DnaScene3D({ onProjectChange, isCameraAnimating }: DnaScene3DProps) {
   const [activeProject, setActiveProject] = useState<ProjectData>(projects[0]);
 
   const handlePointClick = (project: ProjectData) => {
@@ -98,7 +155,8 @@ export default function DnaScene3D({ onProjectChange }: DnaScene3DProps) {
             />
           ))}
           
-          {/* Contrôles d'orbite */}
+          {/* Contrôleur de caméra pour l'animation */}
+          <CameraController isAnimating={isCameraAnimating} />
           
         </Suspense>
         
