@@ -29,31 +29,31 @@ export default function HomePage() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [activeProject, setActiveProject] = useState<ProjectData>(defaultProject);
 
-  // useEffect(() => {
-  //   // Animation du header gauche (descend pendant le scroll)
-  //   gsap.to('.header-left', {
-  //     y: '100vh',
-  //     ease: 'none',
-  //     scrollTrigger: {
-  //       trigger: containerRef.current,
-  //       start: 'top top',
-  //       end: 'bottom bottom',
-  //       scrub: 1
-  //     }
-  //   });
+  useEffect(() => {
+    // Animation du header gauche (descend pendant le scroll)
+    gsap.to('.header-left', {
+      y: '100vh',
+      ease: 'none',
+      scrollTrigger: {
+        trigger: containerRef.current,
+        start: 'top top',
+        end: 'bottom bottom',
+        scrub: 1
+      }
+    });
 
-  //   // Animation du header droite (monte pendant le scroll)
-  //   gsap.to('.header-right', {
-  //     y: '-100vh',
-  //     ease: 'none',
-  //     scrollTrigger: {
-  //       trigger: containerRef.current,
-  //       start: 'top top',
-  //       end: 'bottom bottom',
-  //       scrub: 1
-  //     }
-  //   });
-  // }, []);
+    // Animation du header droite (monte pendant le scroll)
+    gsap.to('.header-right', {
+      y: '-100vh',
+      ease: 'none',
+      scrollTrigger: {
+        trigger: containerRef.current,
+        start: 'top top',
+        end: 'bottom bottom',
+        scrub: 1
+      }
+    });
+  }, []);
 
   return (
     <>
