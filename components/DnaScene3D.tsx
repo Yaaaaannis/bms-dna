@@ -2,7 +2,7 @@
 
 import React, { Suspense, useState, useRef, useEffect, useMemo } from 'react';
 import { Canvas, useThree } from '@react-three/fiber';
-import { Environment, AsciiRenderer } from '@react-three/drei';
+import { AsciiRenderer } from '@react-three/drei';
 import { DnaModel } from './Dna';
 import { InteractivePoint } from './InteractivePoint';
 import { gsap } from 'gsap';
@@ -45,11 +45,10 @@ const projects: ProjectData[] = [
 
 interface DnaScene3DProps {
   onProjectChange: (project: ProjectData) => void;
-  isCameraAnimating: boolean;
 }
 
-// Composant pour l'animation de caméra
-function CameraController({ isAnimating }: { isAnimating: boolean }) {
+// Composant pour l'animation de caméra automatique
+function CameraController() {
   const { camera } = useThree();
   const animationRef = useRef<gsap.core.Timeline | null>(null);
   
@@ -73,37 +72,30 @@ function CameraController({ isAnimating }: { isAnimating: boolean }) {
       z: direction.z / length
     };
 
-    if (isAnimating) {
-      // Créer une animation continue et progressive
-      animationRef.current = gsap.timeline({ repeat: -1 });
-      
-      // Animation continue de la position de la caméra
-      animationRef.current.to(camera.position, {
-        x: initialPosition.x + normalizedDirection.x * -12,
-        y: initialPosition.y + normalizedDirection.y * -12,
-        z: initialPosition.z + normalizedDirection.z * 30,
-        duration: 8,
-        ease: "none" // Easing linéaire pour un mouvement constant
-      });
-    } else {
-      // Arrêter l'animation et revenir à la position initiale
+    // Créer une animation continue et progressive qui se lance automatiquement
+    animationRef.current = gsap.timeline({ repeat: -1 });
+    
+    // Animation continue de la position de la caméra
+    animationRef.current.to(camera.position, {
+      x: initialPosition.x + normalizedDirection.x * -12,
+      y: initialPosition.y + normalizedDirection.y * -12,
+      z: initialPosition.z + normalizedDirection.z * 30,
+      duration: 8,
+      ease: "none" // Easing linéaire pour un mouvement constant
+    });
+
+    // Cleanup function pour arrêter l'animation quand le composant se démonte
+    return () => {
       if (animationRef.current) {
         animationRef.current.kill();
       }
-      gsap.to(camera.position, {
-        x: initialPosition.x,
-        y: initialPosition.y,
-        z: initialPosition.z,
-        duration: 1,
-        ease: "power2.out"
-      });
-    }
-  }, [isAnimating, camera, initialPosition, modelPosition]);
+    };
+  }, [camera, initialPosition, modelPosition]);
 
   return null;
 }
 
-export default function DnaScene3D({ onProjectChange, isCameraAnimating }: DnaScene3DProps) {
+export default function DnaScene3D({ onProjectChange }: DnaScene3DProps) {
   const [activeProject, setActiveProject] = useState<ProjectData>(projects[0]);
 
   const handlePointClick = (project: ProjectData) => {
@@ -114,7 +106,6 @@ export default function DnaScene3D({ onProjectChange, isCameraAnimating }: DnaSc
   return (
     <div className="w-2/3 h-full relative">
       <Canvas
-        shadows
         camera={{ position: [3, 5, 2], fov: 70, rotation: [0, 0, 0] }}
         className="w-full h-full"
         style={{ background: '#000000' }}
@@ -123,19 +114,12 @@ export default function DnaScene3D({ onProjectChange, isCameraAnimating }: DnaSc
           {/* Background noir */}
           <color attach="background" args={['#000000']} />
           
-          {/* Éclairage */}
-          <ambientLight intensity={0.4} />
+          {/* Éclairage simplifié pour ASCII art */}
+          <ambientLight intensity={0.6} />
           <directionalLight
             position={[10, 10, 5]}
-            intensity={1}
-            castShadow
-            shadow-mapSize-width={2048}
-            shadow-mapSize-height={2048}
+            intensity={1.2}
           />
-          <pointLight position={[-10, -10, -5]} intensity={0.5} />
-          
-          {/* Environnement */}
-          <Environment preset="studio" />
           
           {/* Modèle DNA avec animation */}
           <DnaModel 
@@ -155,8 +139,8 @@ export default function DnaScene3D({ onProjectChange, isCameraAnimating }: DnaSc
             />
           ))}
           
-          {/* Contrôleur de caméra pour l'animation */}
-          <CameraController isAnimating={isCameraAnimating} />
+          {/* Contrôleur de caméra pour l'animation automatique */}
+          <CameraController />
           
         </Suspense>
         

@@ -99,17 +99,8 @@ export default function HomePage() {
       {/* Section DNA 3D Scene */}
       <div className="relative h-screen w-full flex">
         <div className="w-1/3 h-screen bg-gradient-to-br from-white to-gray-100 flex items-center justify-center relative">
-          {/* Bouton de contrôle de l'animation */}
-          <button
-            onClick={() => setIsCameraAnimating(!isCameraAnimating)}
-            className="absolute top-8 left-8 z-20 px-6 py-3 bg-black text-white font-bold text-sm uppercase tracking-wider hover:bg-gray-800 transition-colors duration-300"
-            style={{
-              fontFamily: 'DrukWideBold, sans-serif',
-              letterSpacing: '1px'
-            }}
-          >
-            {isCameraAnimating ? 'STOP CAMERA' : 'START CAMERA'}
-          </button>
+
+        
           
           <div className="text-center p-8">
             <h3 
@@ -131,7 +122,7 @@ export default function HomePage() {
             </div>
           </div>
         </div>
-        <DnaScene3D onProjectChange={setActiveProject} isCameraAnimating={isCameraAnimating} />
+        <DnaScene3D onProjectChange={setActiveProject}  />
       </div>
       
       {/* Section Video Projection Mapping */}
